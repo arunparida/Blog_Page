@@ -5,7 +5,7 @@ const slugify = require("slugify");
 exports.createBlog = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const image =   req.file ? `http://localhost:3000/uploads/${req.file.filename}`: '' // Multer saves the uploaded file as 'filename'
+    const image =   req.file.filename;  // Multer saves the uploaded file as 'filename'
 
     const slug = slugify(title, { lower: true }); // Generate slug from the title
     
@@ -32,9 +32,9 @@ exports.getAllBlogs = async (req, res) => {
 
 
     // Get a single blog post by ID
-    exports.getBlogBySlug = async (req, res) => {
+    exports.getBlogByID = async (req, res) => {
     try {
-      const blog = await Blog.findOne({ slug: req.params.slug });
+      const blog = await Blog.findOne({_id:req.params.id});
       if (!blog) {
         return res.status(404).json({ error: 'Blog not found' });
       }
@@ -45,23 +45,30 @@ exports.getAllBlogs = async (req, res) => {
     }
   };
   
-  // Update a blog post by Slug
-  exports.updateBlogBySlug = async (req, res) => {
+  // Update a blog post by ID
+  exports.updateBlog = async (req, res) => {
     try {
-      const { title, description } = req.body;
-      const image = req.file.filename;
+      const { id } = req.params; // Assuming you get the ID from the request parameters
+      const { title, description } = req.body; // Assuming you get the updated data from the request body
   
-      const updatedblog = await Blog.findOneAndUpdate(
-        { slug:req.params.slug},    //find the blog post by slug
-        { title, image, description },  //updated data
-        { new: true });     //Return the updated document
-      if (!updatedblog) {
-        return res.status(404).json({ error: 'Blog not found' });
+      // Find the blog post by its ID and update it
+      const updatedBlog = await Blog.findOneAndUpdate(
+        { _id: id }, // Query: find by ID
+        { title, description }, // Updated data
+        { new: true } // Options: return the updated document
+      );
+  
+      // Check if the blog post was found and updated
+      if (!updatedBlog) {
+        return res.status(404).json({ error: 'Blog post not found' });
       }
-      res.status(200).json(updatedblog);
+  
+      // Send the updated blog post as a response
+      res.json(updatedBlog);
     } catch (error) {
+      // Handle any errors that occurred during the update process
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: 'Internal server error' });
     }
   };
   
@@ -78,4 +85,3 @@ exports.getAllBlogs = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
-

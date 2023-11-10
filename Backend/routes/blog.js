@@ -21,13 +21,13 @@ router.post('/create', upload.single('image'), blogController.createBlog);
 // Get all blog posts
 router.get('/all', blogController.getAllBlogs);
 
-// Get a single blog post by slug
-router.get('/:slug', blogController.getBlogBySlug);
+// Get a single blog post by ID
+router.get('/:id', blogController.getBlogByID);
 
-// Update a blog post by slug
-router.put('/:slug', upload.single('image'), blogController.updateBlogBySlug);
+// Update a blog post by ID
+router.put('/:id', upload.single('image'), blogController.updateBlog);
 
-// Delete a blog post by slug
-router.delete('/:slug', blogController.deleteBlog);
+// Delete a blog post by Id
+router.delete('/:id', blogController.deleteBlog);
 
 module.exports = router;

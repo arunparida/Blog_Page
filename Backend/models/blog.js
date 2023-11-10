@@ -22,6 +22,10 @@ const blogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  // _id: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   auto: true,
+  // },
 });
 
 const Blog = mongoose.model('Blog', blogSchema);
